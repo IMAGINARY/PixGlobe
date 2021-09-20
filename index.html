@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+<!-- <script src="node_modules/d3/dist/d3.min.js"> </script> -->
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://d3js.org/d3-geo.v2.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
+<script src="https://unpkg.com/versor"></script>
+<script src="vendor/d3-save-svg.min.js"></script>
+
+<script src="./pixcube-tj.js"></script>
+<script src="./facelet.js"></script>
+
+<link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body>
+<div class="grid-container">
+    <div class="div-spacer">
+      Specify the <a href="https://bl.ocks.org/mbostock/4282586">Euler angles</a> of the rotation: <br>
+      λ = <input id="lambda" type="number" min=-180 max=180 value=0 /> <br>
+      φ = <input id="phi" type="number" min=-180 max=180 value=0 /> <br>
+      γ = <input id="gamma" type="number" min=-180 max=180 value=0 /> <br>
+      <button id="UpdateBtn"> Update </button> <br>
+      <button id="SaveBtn"> Get printable SVG </button>
+
+    </div>
+    <svg id="svg5"></svg>
+    <div class="div-spacer"></div>
+    <div class="div-spacer"></div>
+    <svg id="svg3"></svg>
+    <svg id="svg0"></svg>
+    <svg id="svg1"></svg>
+    <svg id="svg2"></svg>
+    <div class="div-spacer"></div>
+    <svg id="svg4"></svg>
+    <div class="div-spacer"></div>
+    <div class="div-spacer"></div>
+</div>
+
+<script>
+var svg0 = d3.select("#svg0");
+var svg1 = d3.select("#svg1");
+var svg2 = d3.select("#svg2");
+var svg3 = d3.select("#svg3");
+var svg4 = d3.select("#svg4");
+var svg5 = d3.select("#svg5");
+
+
+// d3.selectAll("svg")
+//           .attr("width", "210mm")
+//           .attr("height", "297mm")
+//           .attr("viewBox","-500 -500 1000 1000");
+
+d3.selectAll("svg")
+          .attr("width", 400)
+          .attr("height", 400)
+          .attr("viewBox","-500 -500 1000 1000");
+
+Scale = 285.5; //Chosen a posteriori to fit 160 x 120 mm
+tileUnit = Scale/3;
+grat = d3.geoGraticule().step([10,10]);
+
+
+// q1 = versor.delta(versor.cartesian([0,90]),versor.cartesian([0,66.5]));
+// q2 = versor.delta(versor.cartesian([0,89.9]),versor.cartesian([0,0.1]));
+// q = versor.multiply(q2,q1) //First q1, then q2
+
+// ORIENTATION OF THE GLOBE
+//q = versor.delta(versor.cartesian([0,0]),versor.cartesian([0,0])); //test
+q1 = versor.delta(versor.cartesian([0,0]),versor.cartesian([-10,0]));
+q2 = versor.delta(versor.cartesian([0,90]),versor.cartesian([-26.56,53.3]));
+q = versor.multiply(q2,q1)
+
+versU = versor.delta(versor.cartesian([0,89.9]),versor.cartesian([0,0]));
+versD = versor.delta(versor.cartesian([0,-89.9]),versor.cartesian([0,0]));
+versR = versor.delta(versor.cartesian([89.9,0]),versor.cartesian([0,0]));
+versL = versor.delta(versor.cartesian([-89.9,0]),versor.cartesian([0,0]));
+versB = versor.delta(versor.cartesian([179.9,0]),versor.cartesian([0,0]));
+
+function drawAll(){
+  drawPixFace(svg0,q);
+  drawPixFace(svg1,versor.multiply(versR,q));
+  drawPixFace(svg2,versor.multiply(versB,q));
+  drawPixFace(svg3,versor.multiply(versL,q));
+  drawPixFace(svg4,versor.multiply(versD,q));
+  drawPixFace(svg5,versor.multiply(versU,q));
+  svg3.append("rect")
+    .attr("x",-0.2*tileUnit)
+    .attr("y",-0.6*tileUnit)
+    .attr("width",1.649*tileUnit)
+    .attr("height",1.0696*tileUnit)
+}
+
+
+d3.json('./carto/land.geojson')
+    .catch(function(error){throw error;})
+    .then(function(data) {
+      Data = data;
+      drawAll();
+});
+
+function update(){
+  var lambda = document.getElementById("lambda").valueAsNumber;
+  var phi = document.getElementById("phi").valueAsNumber;
+  var gamma = document.getElementById("gamma").valueAsNumber;
+  q = versor([lambda,phi,gamma]);
+  d3.selectAll("svg").selectAll("*").remove();
+  drawAll();
+}
+
+d3.select("#UpdateBtn").on("click",update)
+
+// d3.json('./octahedron.topojson')
+//     .catch(function(error){throw error;})
+//     .then(function(data) {
+//       // DD= data;
+//       // console.log(data);
+//       svg.append("path")
+//           .datum(topojson.feature(data,'edges'))
+//           .attr("class","wireframe")
+//           .attr("d",path);
+//
+// });
+
+
+
+  //
+  // let V0, Q0, R0;
+  //
+  // function dragstarted(event) {
+  //   V0 = versor.cartesian(projection.invert([event.x, event.y]));
+  //   Q0 = versor(R0 = projection.rotate());
+  // }
+  //
+  // function dragged(event) {
+  //   const V1 = versor.cartesian(projection.rotate(R0).invert([event.x, event.y]));
+  //   const Q1 = versor.multiply(Q0, versor.delta(V0, V1));
+  //   projection.rotate(versor.rotation(Q1));
+  //   draw();
+  // }
+  //
+  // let R1;
+  //
+  // function dragstarted_NOVERS(event) {
+  //   V0 = projection.invert([event.x, event.y]);
+  //   R0 = projection.rotate();
+  //   R0p = projectionLand.rotate();
+  //
+  // }
+  //
+  // function dragged_NOVERS(event) {
+  //   const V1 = projection.rotate(R0).invert([event.x, event.y]);
+  //   const R1 = [ R0[0] + (V1[0]-V0[0]) , R0[1] + (V1[1]-V0[1]) ]
+  //   const R1p = [ R0p[0] + (V1[0]-V0[0]) , R0p[1] + (V1[1]-V0[1]) ]
+  //
+  //   projection.rotate(R1);
+  //   projectionLand.rotate(R1p);
+  //   draw();
+  // }
+  // svg.call(
+  //     d3.drag()
+  //       .on("start", dragstarted_NOVERS)
+  //       .on("drag", dragged_NOVERS)
+  //   );
+
+  function saveSVG() {
+    var config = { filename: 'PixelatedCube-V2-0' };
+    d3_save_svg.save(svg0.node(), config);
+  };
+
+  function saveAllSVG() {
+    d3.selectAll("svg")
+          .attr("width", "210mm").attr("height", "297mm");
+
+    d3_save_svg.save(svg0.node(), { filename: 'PixelatedCube-0' });
+    d3_save_svg.save(svg1.node(), { filename: 'PixelatedCube-1' });
+    d3_save_svg.save(svg2.node(), { filename: 'PixelatedCube-2' });
+    d3_save_svg.save(svg3.node(), { filename: 'PixelatedCube-3' });
+    d3_save_svg.save(svg4.node(), { filename: 'PixelatedCube-4' });
+    d3_save_svg.save(svg5.node(), { filename: 'PixelatedCube-5' });
+
+    d3.selectAll("svg")
+      .attr("width", 400).attr("height", 400).attr("style",null);
+    //drawAll();
+
+  }
+
+  d3.select("#SaveBtn").on("click",saveAllSVG);
+
+
+</script>
+
+
+
+</body>
+
+
+</html>

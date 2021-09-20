@@ -1,0 +1,59 @@
+
+body{
+  /* background-color: lightgrey; */
+}
+
+.graticule{
+  fill: none;
+  stroke: grey;
+  stroke-width: 1px;
+}
+
+.sphere{
+  fill: white;
+  stroke: black;
+  stroke-width: 1px;
+}
+
+.land{
+  /* fill: black; */
+  fill:  #f0e3c8;
+}
+
+.wireframe{
+  fill: none;
+  stroke: red;
+  stroke-width: 3px;
+}
+
+.maskstyle{
+  /* fill: yellow;
+  opacity: 0.2; */
+  fill: none;
+  stroke: white;
+  stroke-dasharray: 2;
+  stroke-width: 2px;
+}
+
+.water{
+  fill:  #4363a8;
+  /* opacity: 0.2; */
+  /* fill: none; */
+  stroke: none;
+}
+
+.grid-container {
+  display: inline-grid;
+  grid-template-columns: auto auto auto auto;
+  /* background-color: #2196F3; */
+  /* padding: 10px; */
+}
+.div-spacer{
+  width: 400px;
+  height: 300px;
+  padding-top: 100px;
+  /* background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8); */
+  /* font-size: 30px;  */
+  text-align: center;
+}
