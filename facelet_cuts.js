@@ -262,34 +262,34 @@ function drawTile(svg, pj){
       .attr("d",path);
 
   //---- Crop the map to the mask----
-  // var paperLand = new paper.CompoundPath();
-  // var paperGrid = new paper.CompoundPath();
-  // var paperMask = new paper.CompoundPath();
-  //
-  // paperLand.importSVG(land.node());
-  // paperGrid.importSVG(grid.node());
-  // paperMask.importSVG(mask.node());
-  //
-  // grid.remove();
-  // land.remove();
-  // mask.remove();
-  //
-  // var stroked = PaperOffset.offsetStroke(paperGrid, 0.5,{ cap: 'round' });
-  // var newNodeGrid = stroked.intersect(paperMask).exportSVG();
-  // newNodeGrid.classList.add("graticuleFill");
-  // svg.node().appendChild(newNodeGrid);
-  //
-  // var newNodeLand = paperLand.intersect(paperMask).exportSVG();
-  // newNodeLand.classList.add("land");
-  // svg.node().appendChild(newNodeLand);
+  var paperLand = new paper.CompoundPath();
+  var paperGrid = new paper.CompoundPath();
+  var paperMask = new paper.CompoundPath();
+
+  paperLand.importSVG(land.node());
+  paperGrid.importSVG(grid.node());
+  paperMask.importSVG(mask.node());
+
+  grid.remove();
+  land.remove();
+  mask.remove();
+
+  var stroked = PaperOffset.offsetStroke(paperGrid, 0.5,{ cap: 'round' });
+  var newNodeGrid = stroked.intersect(paperMask).exportSVG();
+  newNodeGrid.classList.add("graticuleFill");
+  svg.node().appendChild(newNodeGrid);
+
+  var newNodeLand = paperLand.intersect(paperMask).exportSVG();
+  newNodeLand.classList.add("land");
+  svg.node().appendChild(newNodeLand);
 
   //------
 
-  svg.append("clipPath").attr("id","clip_" + pj.mask)
-        .append("use").attr("xlink:href","#path_" + pj.mask);
-
-  land.attr("clip-path","url(#clip_" + pj.mask);
-  grid.attr("clip-path","url(#clip_" + pj.mask);
+  // svg.append("clipPath").attr("id","clip_" + pj.mask)
+  //       .append("use").attr("xlink:href","#path_" + pj.mask);
+  //
+  // land.attr("clip-path","url(#clip_" + pj.mask);
+  // grid.attr("clip-path","url(#clip_" + pj.mask);
 
   console.log("Tile drawn");
 }

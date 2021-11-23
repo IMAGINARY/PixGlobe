@@ -8,6 +8,11 @@ body{
   stroke: grey;
   stroke-width: 1px;
 }
+.graticuleFill{
+  fill: grey;
+  stroke: none;
+  stroke-width: 1px;
+}
 
 .sphere{
   fill: white;
@@ -30,7 +35,7 @@ body{
   /* fill: yellow;
   opacity: 0.2; */
   fill: none;
-  stroke: none;
+  stroke: none  ;
   stroke-dasharray: 2;
   stroke-width: 2px;
 }
