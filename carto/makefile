@@ -1,4 +1,4 @@
-# Download and Transform the 1:50m Country Shapefiles from Natural Earth
+# Download and Transform the 1:110m Country Shapefiles from Natural Earth
 # http://www.naturalearthdata.com/downloads/110m-physical-vectors/
 
 URL = http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/physical/ne_110m_land.zip
