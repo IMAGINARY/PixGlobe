@@ -30,7 +30,7 @@ body{
   /* fill: yellow;
   opacity: 0.2; */
   fill: none;
-  stroke: white;
+  stroke: none;
   stroke-dasharray: 2;
   stroke-width: 2px;
 }

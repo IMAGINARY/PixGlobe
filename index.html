@@ -8,6 +8,8 @@
 <script src="https://unpkg.com/topojson-client@3"></script>
 <script src="https://unpkg.com/versor"></script>
 <script src="vendor/d3-save-svg.min.js"></script>
+<script src="vendor/paper-full.min.js"></script>
+
 
 <script src="./pixcube-tj.js"></script>
 <script src="./facelet.js"></script>
@@ -48,7 +50,7 @@ var svg3 = d3.select("#svg3");
 var svg4 = d3.select("#svg4");
 var svg5 = d3.select("#svg5");
 
-
+new paper.Project;
 // d3.selectAll("svg")
 //           .attr("width", "210mm")
 //           .attr("height", "297mm")

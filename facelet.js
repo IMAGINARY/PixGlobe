@@ -255,11 +255,33 @@ function drawTile(svg, pj){
       .attr("class","land")
       .attr("d",pathLand);
 
-  svg.append("path")
+  var mask = svg.append("path")
       .datum(topojson.feature(cube_tj,pj.mask))
       .attr("id","path_" + pj.mask)
       .attr("class","maskstyle")
       .attr("d",path);
+
+  //---- Crop the map to the mask----
+  var paperLand = new paper.CompoundPath();
+  // var paperGrid = new paper.CompoundPath();
+  var paperMask = new paper.CompoundPath();
+
+  paperLand.importSVG(land.node());
+  // paperGrid.importSVG(grid.node());
+  paperMask.importSVG(mask.node());
+
+  land.remove();
+  // grid.remove();
+
+  var newNodeLand = paperLand.intersect(paperMask).exportSVG();
+  newNodeLand.classList.add("land");
+  svg.node().appendChild(newNodeLand);
+
+  // var newNodeGrid = paperGrid.intersect(paperMask).exportSVG();
+  // newNodeGrid.classList.add("graticule");
+  // svg.node().appendChild(newNodeGrid);
+
+  //------
 
   svg.append("clipPath").attr("id","clip_" + pj.mask)
         .append("use").attr("xlink:href","#path_" + pj.mask);
